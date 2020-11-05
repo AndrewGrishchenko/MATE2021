@@ -15,6 +15,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_tabWidget_tabBarClicked(int index);
+
+    void on_baudrate9600RadioButton_clicked();
+
+    void on_baudrate115200RadioButton_clicked();
+
+    void on_startCOMButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
