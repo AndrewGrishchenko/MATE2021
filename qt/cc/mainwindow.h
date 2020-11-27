@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QUdpSocket>
 
+#include "packets.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -15,6 +17,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    bool read();
+    void send();
+    void parseInputPacket();
+    void fillOutputPacket();
 
 private slots:
     void on_tabWidget_tabBarClicked(int index);
@@ -27,14 +33,15 @@ private slots:
 
 public slots:
     void func();
-    void initSocket();
-    void readPendingData();
-    void set_data_to_ui();
-    void send();
+    void ready_to_read();
+//    void set_data_to_ui();
 
 private:
+    int8_t is_connected = -1;
     QTimer* timer;
     Ui::MainWindow *ui;
-    QUdpSocket* udpSocket;
+    QUdpSocket *m_udp;
+    InputPacket *m_inputpacket;
+    OutputPacket *m_outputpacket;
 };
 #endif // MAINWINDOW_H

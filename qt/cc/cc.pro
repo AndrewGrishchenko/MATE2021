@@ -85,7 +85,8 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    packets.h
 
 FORMS += \
     mainwindow.ui
