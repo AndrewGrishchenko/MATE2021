@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QTimer>
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -87,7 +87,6 @@ void  MainWindow::fillOutputPacket()
     //fill m_outputpacket with data
 
 
-
 //    m_outputpacket->is_settings = true;
 
 //    m_outputpacket->YawKp = float(ui->YawKp_Value->value());
@@ -116,8 +115,8 @@ void  MainWindow::fillOutputPacket()
 void MainWindow::parseInputPacket()
 {
     //get data from m_inputpacket
-
-
+    qDebug() << QString::number(double(m_inputpacket->yaw));
+//    qDebug() << m_inputpacket->roll;
 
 //    ui->Yaw_Value->setText(QString::number(double(m_inputpacket->yaw)));
 //    ui->Pitch_Value->setText(QString::number(double(m_inputpacket->pitch)));
@@ -132,7 +131,11 @@ void MainWindow::parseInputPacket()
 void MainWindow::func()
 {
     fillOutputPacket(); //fill output packet with data
-    send();             //send this packet
+//    send();             //send this packet
+//    while (1) {
+////        ready_to_read();
+////        send();
+//    }
 
 
 //    SDL_Joystick* gGameController = NULL;

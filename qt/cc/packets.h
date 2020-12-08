@@ -60,6 +60,7 @@ struct OutputPacket
     bool depth_reg_enable = false;
     bool roll_reg_enable = false;
     bool pitch_reg_enable = false;
+    bool is_settings = false;
 
     int8_t smatyvalka = 0;
 
