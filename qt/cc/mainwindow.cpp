@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QTimer>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include <QUdpSocket>
 #include <QNetworkDatagram>
@@ -39,8 +39,18 @@ MainWindow::MainWindow(QWidget *parent)
     joy_timer->setInterval(10);
     joy_timer->start();
 
+    m_timer = new QTimer(this);
+    m_timer->setInterval(50);
+    m_timer->start();
+
+    m_speed_timer = new QTimer(this);
+    m_speed_timer->setInterval(20);
+    m_speed_timer->start();
+
     connect(timer, &QTimer::timeout, this, &MainWindow::func);
     connect(joy_timer, &QTimer::timeout, this, &MainWindow::read_axis);
+    connect(m_speed_timer, &QTimer::timeout, this, &MainWindow::countRealSpeed);
+    connect(m_timer, &QTimer::timeout, this, &MainWindow::ready_to_read);
     connect(ui->camComboBox,SIGNAL(activated(int)),this,SLOT(camComboBox_event(int)));
 
     init_cameras();
@@ -101,7 +111,7 @@ void MainWindow::send() {
 
 bool MainWindow::read()
 {
-    QHostAddress *adress = new QHostAddress("169.254.101.40");
+    QHostAddress *adress = new QHostAddress("169.254.101.39");
 //    QHostAddress *adress = new QHostAddress::Any;
     if(m_udp->hasPendingDatagrams())
     {

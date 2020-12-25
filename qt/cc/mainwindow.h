@@ -87,6 +87,8 @@ private:
 //    SDL_Joystick* joy;
     int8_t is_connected = -1;
     QTimer* timer;
+    QTimer *m_timer;
+    QTimer *m_speed_timer;
     Ui::MainWindow *ui;
     QUdpSocket *m_udp;
     InputPacket *m_inputpacket;
