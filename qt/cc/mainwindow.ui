@@ -413,13 +413,6 @@
                 </property>
                </widget>
               </item>
-              <item row="11" column="4">
-               <widget class="QCheckBox" name="YawReg_Enabler">
-                <property name="text">
-                 <string>YawReg</string>
-                </property>
-               </widget>
-              </item>
               <item row="11" column="1">
                <widget class="QDoubleSpinBox" name="PitchKd_Value"/>
               </item>
@@ -480,7 +473,7 @@
                </widget>
               </item>
               <item row="9" column="5">
-               <widget class="QLabel" name="Grabber_Value">
+               <widget class="QLabel" name="Grabber_rotate">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -527,13 +520,6 @@
                <widget class="QLabel" name="label_26">
                 <property name="text">
                  <string>Pitch</string>
-                </property>
-               </widget>
-              </item>
-              <item row="13" column="4">
-               <widget class="QPushButton" name="Save_Button">
-                <property name="text">
-                 <string>Save</string>
                 </property>
                </widget>
               </item>
@@ -591,13 +577,6 @@
                 </property>
                </widget>
               </item>
-              <item row="12" column="4">
-               <widget class="QCheckBox" name="RollReg_Enabler">
-                <property name="text">
-                 <string>RollReg</string>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label">
                 <property name="text">
@@ -638,16 +617,6 @@
                 </property>
                </widget>
               </item>
-              <item row="10" column="5">
-               <widget class="QLabel" name="Camera_Value">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
               <item row="9" column="3">
                <widget class="QLabel" name="T_Value">
                 <property name="frameShape">
@@ -662,13 +631,6 @@
                <widget class="QLabel" name="label_44">
                 <property name="text">
                  <string>Button 6</string>
-                </property>
-               </widget>
-              </item>
-              <item row="13" column="5">
-               <widget class="QPushButton" name="Load_Button">
-                <property name="text">
-                 <string>Load</string>
                 </property>
                </widget>
               </item>
@@ -706,13 +668,6 @@
                <widget class="QLabel" name="label_53">
                 <property name="text">
                  <string>Button 9</string>
-                </property>
-               </widget>
-              </item>
-              <item row="12" column="5">
-               <widget class="QCheckBox" name="DepthReg_Enabler">
-                <property name="text">
-                 <string>DepthReg</string>
                 </property>
                </widget>
               </item>
@@ -777,13 +732,6 @@
                 </property>
                </widget>
               </item>
-              <item row="11" column="5">
-               <widget class="QCheckBox" name="PitchReg_Enabler">
-                <property name="text">
-                 <string>PitchReg</string>
-                </property>
-               </widget>
-              </item>
               <item row="8" column="4">
                <widget class="QLabel" name="label_54">
                 <property name="text">
@@ -812,13 +760,6 @@
                <widget class="QLabel" name="label_43">
                 <property name="text">
                  <string>Button 5</string>
-                </property>
-               </widget>
-              </item>
-              <item row="10" column="4">
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>Camera</string>
                 </property>
                </widget>
               </item>
@@ -869,7 +810,7 @@
               <item row="9" column="4">
                <widget class="QLabel" name="label_29">
                 <property name="text">
-                 <string>Grabbler</string>
+                 <string>Grabber rotate</string>
                 </property>
                </widget>
               </item>
@@ -961,6 +902,82 @@
                 </property>
                </widget>
               </item>
+              <item row="14" column="4">
+               <widget class="QPushButton" name="Save_Button">
+                <property name="text">
+                 <string>Save</string>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="5">
+               <widget class="QPushButton" name="Load_Button">
+                <property name="text">
+                 <string>Load</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="5">
+               <widget class="QCheckBox" name="DepthReg_Enabler">
+                <property name="text">
+                 <string>DepthReg</string>
+                </property>
+               </widget>
+              </item>
+              <item row="12" column="5">
+               <widget class="QCheckBox" name="PitchReg_Enabler">
+                <property name="text">
+                 <string>PitchReg</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="4">
+               <widget class="QCheckBox" name="RollReg_Enabler">
+                <property name="text">
+                 <string>RollReg</string>
+                </property>
+               </widget>
+              </item>
+              <item row="12" column="4">
+               <widget class="QCheckBox" name="YawReg_Enabler">
+                <property name="text">
+                 <string>YawReg</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="4">
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>Camera</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="5">
+               <widget class="QLabel" name="Camera_Value">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="4">
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>Grabber grab</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="5">
+               <widget class="QLabel" name="Grabber_grab">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -986,7 +1003,7 @@
      <x>0</x>
      <y>0</y>
      <width>1008</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

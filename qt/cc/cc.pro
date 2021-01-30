@@ -21,34 +21,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 #for control panel
-INCLUDEPATH += "C:\SDL\SDL-1.2.15_32\SDL-1.2.15\include"
-LIBS += -L "C:\SDL\SDL-1.2.15_32\SDL-1.2.15\lib" -lSDL
+#INCLUDEPATH += "C:\SDL\SDL-1.2.15_32\SDL-1.2.15\include"
+#LIBS += -L "C:\SDL\SDL-1.2.15_32\SDL-1.2.15\lib" -lSDL
 
-INCLUDEPATH += "C:\opencv\build\include"
+#INCLUDEPATH += "C:\opencv\build\include"
 
-LIBS += -L"C:\opencv-build\lib" \
-        -llibopencv_calib3d440.dll \
-        -llibopencv_core440.dll \
-        -llibopencv_dnn440.dll \
-        -llibopencv_features2d440.dll \
-        -llibopencv_flann440.dll \
-        -llibopencv_highgui440.dll \
-        -llibopencv_imgcodecs440.dll \
-        -llibopencv_imgproc440.dll \
-        -llibopencv_ml440.dll \
-        -llibopencv_objdetect440.dll \
-        -llibopencv_photo440.dll \
-        -llibopencv_stitching440.dll \
-        -llibopencv_video440.dll \
-        -llibopencv_videoio440.dll \
-
-
-#for notebook
-#INCLUDEPATH += "D:\Code\Qt\Tools\SDL-1.2.15_32\SDL-1.2.15\include"
-#LIBS += -L "D:\Code\Qt\Tools\SDL-1.2.15_32\SDL-1.2.15\lib" -lSDL
-
-#INCLUDEPATH += "D:\Code\opencv\build\include"
-#LIBS += -L"D:\Code\opencv-build\lib" \
+#LIBS += -L"C:\opencv-build\lib" \
 #        -llibopencv_calib3d440.dll \
 #        -llibopencv_core440.dll \
 #        -llibopencv_dnn440.dll \
@@ -63,6 +41,28 @@ LIBS += -L"C:\opencv-build\lib" \
 #        -llibopencv_stitching440.dll \
 #        -llibopencv_video440.dll \
 #        -llibopencv_videoio440.dll \
+
+
+#for notebook
+INCLUDEPATH += "D:\Code\Qt\Tools\SDL-1.2.15_32\SDL-1.2.15\include"
+LIBS += -L "D:\Code\Qt\Tools\SDL-1.2.15_32\SDL-1.2.15\lib" -lSDL
+
+INCLUDEPATH += "D:\Code\opencv\build\include"
+LIBS += -L"D:\Code\opencv-build\lib" \
+        -llibopencv_calib3d440.dll \
+        -llibopencv_core440.dll \
+        -llibopencv_dnn440.dll \
+        -llibopencv_features2d440.dll \
+        -llibopencv_flann440.dll \
+        -llibopencv_highgui440.dll \
+        -llibopencv_imgcodecs440.dll \
+        -llibopencv_imgproc440.dll \
+        -llibopencv_ml440.dll \
+        -llibopencv_objdetect440.dll \
+        -llibopencv_photo440.dll \
+        -llibopencv_stitching440.dll \
+        -llibopencv_video440.dll \
+        -llibopencv_videoio440.dll \
 
 
 

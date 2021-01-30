@@ -141,27 +141,28 @@ void  MainWindow::fillOutputPacket()
 
     m_outputpacket->is_settings = true;
 
-    m_outputpacket->YawKp = float(ui->YawKp_Value->value());
-    m_outputpacket->YawKp = float(ui->YawKp_Value->value());
-    m_outputpacket->YawKi = float(ui->YawKi_Value->value());
-    m_outputpacket->YawKd = float(ui->YawKd_Value->value());
-    m_outputpacket->PitchKp = float(ui->PitchKp_Value->value());
-    m_outputpacket->PitchKi = float(ui->PitchKi_Value->value());
-    m_outputpacket->PitchKd = float(ui->PitchKd_Value->value());
-    m_outputpacket->RollKp = float(ui->RollKp_Value->value());
-    m_outputpacket->RollKi = float(ui->RollKi_Value->value());
-    m_outputpacket->RollKd = float(ui->RollKd_Value->value());
-    m_outputpacket->DepthKp = float(ui->DepthKp_Value->value());
-    m_outputpacket->DepthKi = float(ui->DepthKi_Value->value());
-    m_outputpacket->DepthKd = float(ui->DepthKd_Value->value());
-    m_outputpacket->YawToSet = float(ui->YawToSet_Value->value());
-    m_outputpacket->PitchToSet = float(ui->PitchToSet_Value->value());
-    m_outputpacket->RollToSet = float(ui->RollToSet_Value->value());
-    m_outputpacket->DepthToSet = float(ui->DepthToSet_Value->value());
-    m_outputpacket->yaw_reg_enable = ui->YawReg_Enabler->isChecked();
-    m_outputpacket->pitch_reg_enable = ui->PitchReg_Enabler->isChecked();
-    m_outputpacket->roll_reg_enable = ui->RollReg_Enabler->isChecked();
-    m_outputpacket->depth_reg_enable = ui->DepthReg_Enabler->isChecked();
+    m_outputpacket->m_YawKp = float(ui->YawKp_Value->value());
+    m_outputpacket->m_YawKp = float(ui->YawKp_Value->value());
+    m_outputpacket->m_YawKi = float(ui->YawKi_Value->value());
+    m_outputpacket->m_YawKd = float(ui->YawKd_Value->value());
+    m_outputpacket->m_PitchKp = float(ui->PitchKp_Value->value());
+    m_outputpacket->m_PitchKi = float(ui->PitchKi_Value->value());
+    m_outputpacket->m_PitchKd = float(ui->PitchKd_Value->value());
+    m_outputpacket->m_RollKp = float(ui->RollKp_Value->value());
+    m_outputpacket->m_RollKi = float(ui->RollKi_Value->value());
+    m_outputpacket->m_RollKd = float(ui->RollKd_Value->value());
+    m_outputpacket->m_DepthKp = float(ui->DepthKp_Value->value());
+    m_outputpacket->m_DepthKi = float(ui->DepthKi_Value->value());
+    m_outputpacket->m_DepthKd = float(ui->DepthKd_Value->value());
+    m_outputpacket->m_YawToSet = float(ui->YawToSet_Value->value());
+    m_outputpacket->m_PitchToSet = float(ui->PitchToSet_Value->value());
+    m_outputpacket->m_RollToSet = float(ui->RollToSet_Value->value());
+    m_outputpacket->m_DepthToSet = float(ui->DepthToSet_Value->value());
+    m_outputpacket->m_yaw_reg_enable = ui->YawReg_Enabler->isChecked();
+    m_outputpacket->m_pitch_reg_enable = ui->PitchReg_Enabler->isChecked();
+    m_outputpacket->m_roll_reg_enable = ui->RollReg_Enabler->isChecked();
+    m_outputpacket->m_depth_reg_enable = ui->DepthReg_Enabler->isChecked();
+    m_outputpacket->m_micro_speed = micro_speed;
 }
 
 void MainWindow::parseInputPacket()
@@ -290,9 +291,9 @@ void MainWindow::read_axis()
     ui->Y_Value->setNum(-m_outputpacket->axis_Y);
     ui->Z_Value->setNum(m_outputpacket->axis_Z);
     ui->W_Value->setNum(m_outputpacket->axis_W);
-    ui->W_Value->setNum(m_outputpacket->axis_W);
     ui->T_Value->setNum(m_outputpacket->manipulator_rotate);
-    ui->Grabber_Value->setNum(m_outputpacket->manipulator_grab);
+    ui->Grabber_rotate->setNum(m_outputpacket->manipulator_rotate);
+    ui->Grabber_grab->setNum(m_outputpacket->manipulator_grab);
     ui->Button_3_Value->setNum(m_outputpacket->buttons[0]);
     ui->Button_4_Value->setNum(m_outputpacket->buttons[1]);
     ui->Button_5_Value->setNum(m_outputpacket->buttons[2]);
@@ -314,35 +315,69 @@ void MainWindow::read_axis()
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    int key = event->key();
-    if(key == 83) m_outputpacket->m_micro_speed = 0;
-    else if(key == 83) m_outputpacket->m_micro_speed = 0;
-    if(key == 65) m_outputpacket->smatyvalka = 0;
-    else if(key == 65) m_outputpacket->smatyvalka = 0;
+    //??
+
+//    int key = event->key();
+//    if(key == 83) m_outputpacket->m_micro_speed = 0;
+//    else if(key == 83) m_outputpacket->m_micro_speed = 0;
+//    if(key == 65) m_outputpacket->smatyvalka = 0;
+//    else if(key == 65) m_outputpacket->smatyvalka = 0;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    int key = event->key();
-    //std::cout <<key<<std::endl;
-    if(key == 81)
+    char c = char(event->key());
+    switch (c)
     {
-        micro_speed -= 10;
-        micro_speed = constrain(micro_speed, 0, 100);
+        case 'F':
+            micro_speed = 0;
+            break;
+        case 'W':
+            if (micro_speed < 0) micro_speed *= -1;
+            break;
+        case 'A':
+            micro_speed -= 10;
+            break;
+        case 'S':
+            if (micro_speed > 0) micro_speed *= -1;
+            break;
+        case 'D':
+           micro_speed += 10;
+           break;
+        case 'Z':
+           m_outputpacket->smatyvalka = -1;
+           break;
+        case 'X':
+           m_outputpacket->smatyvalka = 1;
+           break;
+        case 'C':
+           m_outputpacket->smatyvalka = 0;
+           break;
     }
-    if(key == 69)
-    {
-        micro_speed += 10;
-        micro_speed = constrain(micro_speed, 0, 100);
-    }
-    if(key == 87) m_outputpacket->m_micro_speed = micro_speed;
-    else if(key == 83) m_outputpacket->m_micro_speed = -micro_speed;
-    else m_outputpacket->m_micro_speed = 0;
-    if(key == 70) m_outputpacket->m_micro_led = 0;
-    if(key == 82) m_outputpacket->m_micro_led = 1;
-    if(key == 65) m_outputpacket->smatyvalka = -1;
-    else if(key == 68) m_outputpacket->smatyvalka = 1;
-    else m_outputpacket->smatyvalka = 0;
+
+
+    //??
+
+//    int key = event->key();
+//    //std::cout <<key<<std::endl;
+//    if(key == 81)
+//    {
+//        micro_speed -= 10;
+//        micro_speed = constrain(micro_speed, 0, 100);
+//    }
+//    if(key == 69)
+//    {
+//        micro_speed += 10;
+//        micro_speed = constrain(micro_speed, 0, 100);
+//    }
+//    if(key == 87) m_outputpacket->m_micro_speed = micro_speed;
+//    else if(key == 83) m_outputpacket->m_micro_speed = -micro_speed;
+//    else m_outputpacket->m_micro_speed = 0;
+//    if(key == 70) m_outputpacket->m_micro_led = 0;
+//    if(key == 82) m_outputpacket->m_micro_led = 1;
+//    if(key == 65) m_outputpacket->smatyvalka = -1;
+//    else if(key == 68) m_outputpacket->smatyvalka = 1;
+//    else m_outputpacket->smatyvalka = 0;
 }
 
 void MainWindow::init_cameras()
@@ -544,18 +579,18 @@ void MainWindow::on_Save_Button_clicked()
     stream.setCodec("UTF-8");
     fillOutputPacket();
 
-    stream << "YawKp = " << m_outputpacket->YawKp << '\n';
-    stream << "YawKi = " << m_outputpacket->YawKi << '\n';
-    stream << "YawKd = " << m_outputpacket->YawKd << '\n';
-    stream << "PitchKp = " << m_outputpacket->PitchKp << '\n';
-    stream << "PitchKi = " << m_outputpacket->PitchKi << '\n';
-    stream << "PitchKd = " << m_outputpacket->PitchKd << '\n';
-    stream << "RollKp = " << m_outputpacket->RollKp << '\n';
-    stream << "RollKi = " << m_outputpacket->RollKi << '\n';
-    stream << "RollKd = " << m_outputpacket->RollKd << '\n';
-    stream << "DepthKp = " << m_outputpacket->DepthKp << '\n';
-    stream << "DepthKi = " << m_outputpacket->DepthKi << '\n';
-    stream << "DepthKd = " << m_outputpacket->DepthKd << '\n';
+    stream << "YawKp = " << m_outputpacket->m_YawKp << '\n';
+    stream << "YawKi = " << m_outputpacket->m_YawKi << '\n';
+    stream << "YawKd = " << m_outputpacket->m_YawKd << '\n';
+    stream << "PitchKp = " << m_outputpacket->m_PitchKp << '\n';
+    stream << "PitchKi = " << m_outputpacket->m_PitchKi << '\n';
+    stream << "PitchKd = " << m_outputpacket->m_PitchKd << '\n';
+    stream << "RollKp = " << m_outputpacket->m_RollKp << '\n';
+    stream << "RollKi = " << m_outputpacket->m_RollKi << '\n';
+    stream << "RollKd = " << m_outputpacket->m_RollKd << '\n';
+    stream << "DepthKp = " << m_outputpacket->m_DepthKp << '\n';
+    stream << "DepthKi = " << m_outputpacket->m_DepthKi << '\n';
+    stream << "DepthKd = " << m_outputpacket->m_DepthKd << '\n';
 
     out.close();
 }
