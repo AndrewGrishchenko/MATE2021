@@ -344,15 +344,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         case 'D':
            micro_speed += 10;
            break;
-        case 'Z':
-           m_outputpacket->smatyvalka = -1;
-           break;
-        case 'X':
-           m_outputpacket->smatyvalka = 1;
-           break;
-        case 'C':
-           m_outputpacket->smatyvalka = 0;
-           break;
+//        case 'Z':
+//           m_outputpacket->smatyvalka = -1;
+//           break;
+//        case 'X':
+//           m_outputpacket->smatyvalka = 1;
+//           break;
+//        case 'C':
+//           m_outputpacket->smatyvalka = 0;
+//           break;
     }
 
 
