@@ -64,8 +64,27 @@ private slots:
     void on_PitchReg_Enabler_clicked();
     void on_RollReg_Enabler_clicked();
     void on_DepthReg_Enabler_clicked();
-
     void on_Update_Button_clicked();
+    void on_start_HSV_Button_clicked();
+    void on_stop_HSV_Button_clicked();
+
+    void on_Subway_ShotButton_clicked();
+
+    void on_Subway_ClearButton_clicked();
+
+    void on_Subway_ctrlzButton_clicked();
+
+    void on_Map_bCircleRB_clicked();
+
+    void on_Map_yCircleRB_clicked();
+
+    void on_Map_rEllipseRB_clicked();
+
+    void on_Map_gCircleRB_clicked();
+
+    void on_Map_CtrlzButton_clicked();
+
+    void on_Map_ClearButton_clicked();
 
 public slots:
     void func();
@@ -75,10 +94,23 @@ public slots:
     void camComboBox_event(int index);
     void init_cameras();
     void processFrameAndUpdateGUI();
+    void hsv_setting(std::vector<int> hsv_min, std::vector<int> hsv_max);
 //    void set_data_to_ui();
+
+    void on_hue_min_slider_actionTriggered(int action);
+    void on_hue_max_slider_actionTriggered(int action);
+    void on_sat_min_slider_actionTriggered(int action);
+    void on_sat_max_slider_actionTriggered(int action);
+    void on_val_min_slider_actionTriggered(int action);
+    void on_val_max_slider_actionTriggered(int action);
+
+    void processMap();
+
+    void closeEvent(QCloseEvent *event);
 
 private:
     cv::VideoCapture cap;
+    int camera_index = -1;
     QTimer* img_timer;
     int8_t m_real_speed = 0;
     int8_t micro_speed = 0;
@@ -93,5 +125,24 @@ private:
     QUdpSocket *m_udp;
     InputPacket *m_inputpacket;
     OutputPacket *m_outputpacket;
+    std::vector<int> hsv_min = {0, 0, 0};
+    std::vector<int> hsv_max = {255, 255, 255};
+
+    int hue_min_label=0, hue_max_label=255, sat_min_label=0, sat_max_label=255, val_min_label=0, val_max_label=255;
+    bool stop_hsv = true;
+    bool dest = false;
+
+    //SUBWAY
+    int num_img;
+    int imgs_widths;
+    cv::Mat firstImg;
+    cv::Mat secondImg;
+    cv::Mat finalImg;
+
+    //MAP
+    cv::Mat map_img;
+    cv::Mat old_map_img;
+    cv::Mat createGrid();
+    int shape_num = 1;
 };
 #endif // MAINWINDOW_H

@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <SDL/SDL.h>
+#include "customlabel.h"
 
 #include <QUdpSocket>
 #include <QNetworkDatagram>
@@ -21,6 +22,32 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
+    num_img = 0;
+    imgs_widths = 0;
+
+
+    ui->hue_min_slider->setMaximum(255);
+    ui->hue_max_slider->setMaximum(255);
+    ui->sat_min_slider->setMaximum(255);
+    ui->sat_max_slider->setMaximum(255);
+    ui->val_min_slider->setMaximum(255);
+    ui->val_max_slider->setMaximum(255);
+
+    ui->hue_max_slider->setValue(255);
+    ui->sat_max_slider->setValue(255);
+    ui->val_max_slider->setValue(255);
+
+
+    map_img = createGrid();
+    map_img.copyTo(old_map_img);
+    QPixmap map_pixmap;
+    const uchar *qImageBuffer = (const uchar*)map_img.data;
+    QImage map_image(qImageBuffer, map_img.cols, map_img.rows, map_img.step, QImage::Format_RGB888);
+    map_pixmap = QPixmap::fromImage(map_image.rgbSwapped());
+    ui->Map_photoLabel->setPixmap(map_pixmap);
+
 
     SDL_Init(SDL_INIT_JOYSTICK);
     SDL_JoystickEventState(SDL_ENABLE);
@@ -52,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_speed_timer, &QTimer::timeout, this, &MainWindow::countRealSpeed);
     connect(m_timer, &QTimer::timeout, this, &MainWindow::ready_to_read);
     connect(ui->camComboBox,SIGNAL(activated(int)),this,SLOT(camComboBox_event(int)));
+    connect(ui->Map_photoLabel, &CustomLabel::mousePressed, this, &MainWindow::processMap);
 
     init_cameras();
 }
@@ -404,9 +432,11 @@ void MainWindow::camComboBox_event(int index)
         cap.release();
         ui->frame->clear();
         ui->frame2->clear();
+        ui->Subway_camLabel->clear();
     }
     else
     {
+        camera_index = index - 1;
         cap.open(index-1);
         if (!cap.isOpened()) {
             qDebug() << "Error camera";
@@ -458,6 +488,9 @@ void MainWindow::processFrameAndUpdateGUI()
             ui->frame2->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
             break;
     }
+    ui->Subway_camLabel->setPixmap(QPixmap::fromImage(qOriginalImage));
+    ui->Subway_camLabel->setScaledContents(true);
+    ui->Subway_camLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 }
 
 void MainWindow::on_tabWidget_tabBarClicked(int index)
@@ -499,12 +532,6 @@ void MainWindow::on_startCOMButton_clicked()
 
     //retrieve data from microROV and write it to "..." labels
 }
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
 
 void MainWindow::on_auto_send_stateChanged(int arg1)
 {
@@ -595,10 +622,338 @@ void MainWindow::on_Save_Button_clicked()
     out.close();
 }
 
+//HSV
+void MainWindow::hsv_setting(std::vector<int> hsv_min, std::vector<int> hsv_max)
+{
+    ui->hue_min_label->setText("Hue Min: 0");
+    ui->sat_min_label->setText("Saturaion Min: 0");
+    ui->val_min_label->setText("Value Min: 0");
+    ui->hue_max_label->setText("Hue Max: 255");
+    ui->sat_max_label->setText("Saturation Max: 255");
+    ui->val_max_label->setText("Value Max: 255");
+
+    if (camera_index == -1)
+    {
+        qDebug() << "Select camera";
+        stop_hsv = true;
+    }
+    cv::Mat img;
+
+    while (!stop_hsv && !dest)
+    {
+//        img = cv::imread("C://Users/andre/Desktop/test1.png");
+        cap.read(img);
+
+        cv::Mat img_hsv;
+        cv::cvtColor(img, img_hsv, cv::COLOR_BGR2HSV);
+        cv::Mat mask;
+        cv::inRange(img_hsv, cv::Scalar(hue_min_label, sat_min_label, val_min_label), cv::Scalar(hue_max_label, sat_max_label, val_max_label), mask);
+        cv::Mat frame;
+        cv::bitwise_or(img, img, frame, mask);
+
+//        cv::imshow("img", img);
+//        cv::imshow("img_hsv", img_hsv);
+        cv::imshow("mask", mask);
+        cv::imshow("frame", frame);
+        cv::waitKey(50);
+
+        qDebug() << "hsv_min" << hue_min_label << sat_min_label << val_min_label << "hsv_max" << hue_max_label << sat_max_label << val_max_label;
+    }
+    cv::destroyAllWindows();
+//    cv::destroyWindow("mask");
+//    cv::destroyWindow("frame");
+}
 
 
 
 
+//SUBWAY
+void MainWindow::on_Subway_ShotButton_clicked()
+{
+    cv::Mat img;
+    cap.read(img);
+
+    if (img.empty() == true)
+    {
+        qDebug() << "shotButton error";
+        return;
+    }
+
+    //some raspoznavaniye
+
+    num_img += 1;
+    if (num_img == 5)
+    {
+        cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
+
+        cv::Mat blank1(img.rows, imgs_widths, CV_8UC3, cv::Scalar(255, 255, 255));
+        cv::hconcat(blank1, img, secondImg);
+
+        cv::Mat blank2(secondImg.rows, firstImg.cols - secondImg.cols, CV_8UC3, cv::Scalar(255, 255, 255));
+        cv::hconcat(secondImg, blank2, secondImg);
+
+        cv::vconcat(secondImg, firstImg, finalImg);
+
+        QImage qOriginalImage((uchar*)finalImg.data, finalImg.cols,
+        finalImg.rows, finalImg.step, QImage::Format_RGB888);
+
+        ui->Subway_photoLabel->setPixmap(QPixmap::fromImage(qOriginalImage));
+        ui->Subway_photoLabel->setScaledContents(true);
+        ui->Subway_photoLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    }
+    else if (num_img == 1)
+    {
+        firstImg = img;
+        imgs_widths += firstImg.cols;
+
+        cv::cvtColor(firstImg, firstImg, cv::COLOR_BGR2RGB);
+
+        QImage qOriginalImage((uchar*)firstImg.data, firstImg.cols,
+        firstImg.rows, firstImg.step, QImage::Format_RGB888);
+
+
+        ui->Subway_photoLabel->setPixmap(QPixmap::fromImage(qOriginalImage));
+        ui->Subway_photoLabel->setScaledContents(true);
+        ui->Subway_photoLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    }
+    else if (num_img < 5)
+    {
+        cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
+
+//        cv::imshow("img", img);
+//        cv::imshow("firstImg", firstImg);
+
+        cv::hconcat(firstImg, img, firstImg);
+
+//        cv::cvtColor(firstImg, firstImg, cv::COLOR_BGR2RGB);
+
+        QImage qOriginalImage((uchar*)firstImg.data, firstImg.cols,
+        firstImg.rows, firstImg.step, QImage::Format_RGB888);
+
+
+        ui->Subway_photoLabel->setPixmap(QPixmap::fromImage(qOriginalImage));
+        ui->Subway_photoLabel->setScaledContents(true);
+        ui->Subway_photoLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    }
+    else num_img -= 1;
+}
+void MainWindow::on_Subway_ClearButton_clicked()
+{
+    firstImg.release();
+    secondImg.release();
+    finalImg.release();
+    num_img = 0;
+    imgs_widths = 0;
+    ui->Subway_photoLabel->clear();
+}
+void MainWindow::on_Subway_ctrlzButton_clicked()
+{
+    if (num_img > 0)
+    {
+        if (num_img == 5)
+        {
+            secondImg.release();
+            finalImg.release();
+
+
+//            int width = firstImg.cols;
+//            int height = firstImg.rows/2;
+//            cv::Rect ROI(0, 0, width, height);
+//            cv::Mat ctrlz_firstImg(firstImg, ROI);
+
+//            cv::imshow("firstImg", firstImg);
+//            cv::imshow("ctrlz", ctrlz_firstImg);
+
+//            firstImg = ctrlz_firstImg.clone();
+
+            QImage qOriginalImage((uchar*)firstImg.data, firstImg.cols,
+            firstImg.rows, firstImg.step, QImage::Format_RGB888);
+
+
+            ui->Subway_photoLabel->setPixmap(QPixmap::fromImage(qOriginalImage));
+            ui->Subway_photoLabel->setScaledContents(true);
+            ui->Subway_photoLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+            num_img -= 1;
+        }
+        else if (num_img == 1)
+        {
+            firstImg.release();
+            secondImg.release();
+            finalImg.release();
+            num_img = 0;
+            imgs_widths = 0;
+            ui->Subway_photoLabel->clear();
+        }
+        else if (num_img < 5)
+        {
+            cv::Rect ROI(0, 0, firstImg.cols/num_img * (num_img - 1), firstImg.rows);
+            cv::Mat ctrlz_firstImg(firstImg, ROI);
+
+//            cv::imshow("firstImg", firstImg);
+//            cv::imshow("ctrlz", ctrlz_firstImg);
+
+            firstImg = ctrlz_firstImg.clone();
+
+            QImage qOriginalImage((uchar*)firstImg.data, firstImg.cols,
+            firstImg.rows, firstImg.step, QImage::Format_RGB888);
+
+
+            ui->Subway_photoLabel->setPixmap(QPixmap::fromImage(qOriginalImage));
+            ui->Subway_photoLabel->setScaledContents(true);
+            ui->Subway_photoLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+            num_img -= 1;
+        }
+    }
+}
+
+
+
+
+//MAP
+cv::Mat MainWindow::createGrid()
+{
+    cv::Mat img(cv::Size(900, 300), CV_8UC3, cv::Scalar(255, 255, 255));
+    for (int i = 1; i < 10; i++)
+    {
+        cv::line(img, cv::Point(i * 100, 0), cv::Point(i * 100, 300), cv::Scalar(0, 0, 0));
+    }
+    for(int i = 1; i < 4; i++)
+    {
+        cv::line(img, cv::Point(0, i * 100), cv::Point(900, i * 100), cv::Scalar(0, 0, 0));
+    }
+    return img;
+}
+
+void MainWindow::processMap()
+{
+    map_img.copyTo(old_map_img);
+
+    int x = ui->Map_photoLabel->xpos;
+    int y = ui->Map_photoLabel->ypos;
+    int width = ui->Map_photoLabel->width();
+    int height = ui->Map_photoLabel->height();
+    float xK = (float)map_img.cols / (float)width;
+    float yK = (float)map_img.rows / (float)height;
+    int num_width = (map_img.cols / 9);
+    int num_height = (map_img.rows / 3);
+    int numX = x * xK / num_width + 1;
+    int numY = y * yK / num_height + 1;
+
+    switch (shape_num)
+    {
+    //        cv::circle(img, cv::Point(x * xK, y * yK), 5, cv::Scalar(0, 0, 0));
+        case 1:
+            cv::circle(map_img, cv::Point((numX * num_width) - (num_width / 2), (numY * num_height) - (num_height / 2)), (num_width / 2 * 0.75), CV_RGB(0, 0, 255), 3);
+            break;
+        case 2:
+            cv::circle(map_img, cv::Point((numX * num_width) - (num_width / 2), (numY * num_height) - (num_height / 2)), (num_width / 2 * 0.75), CV_RGB(255, 255, 0), 3);
+            break;
+        case 3:
+            cv::ellipse(map_img, cv::Point(numX * num_width, (numY * num_height) - (num_height / 2)), cv::Size(num_width * 0.75, num_height / 2 * 0.75), 0, 0, 360, CV_RGB(255, 0, 0), 3);
+            break;
+        case 4:
+            cv::circle(map_img, cv::Point((numX * num_width) - (num_width / 2), (numY * num_height) - (num_height / 2)), (num_width / 2 * 0.75), CV_RGB(0, 255, 0), 3);
+            break;
+    }
+
+    QPixmap map_pixmap;
+    const uchar *qImageBuffer = (const uchar*)map_img.data;
+    QImage map_image(qImageBuffer, map_img.cols, map_img.rows, map_img.step, QImage::Format_RGB888);
+    map_pixmap = QPixmap::fromImage(map_image.rgbSwapped());
+
+    ui->Map_photoLabel->setPixmap(map_pixmap);
+}
+void MainWindow::on_Map_CtrlzButton_clicked()
+{
+    old_map_img.copyTo(map_img);
+    QPixmap map_pixmap;
+    const uchar *qImageBuffer = (const uchar*)map_img.data;
+    QImage map_image(qImageBuffer, map_img.cols, map_img.rows, map_img.step, QImage::Format_RGB888);
+    map_pixmap = QPixmap::fromImage(map_image.rgbSwapped());
+    ui->Map_photoLabel->setPixmap(map_pixmap);
+}
+void MainWindow::on_Map_ClearButton_clicked()
+{
+    map_img = createGrid();
+    map_img.copyTo(old_map_img);
+    QPixmap map_pixmap;
+    const uchar *qImageBuffer = (const uchar*)map_img.data;
+    QImage map_image(qImageBuffer, map_img.cols, map_img.rows, map_img.step, QImage::Format_RGB888);
+    map_pixmap = QPixmap::fromImage(map_image.rgbSwapped());
+    ui->Map_photoLabel->setPixmap(map_pixmap);
+}
+
+
+
+
+//MAP THINGS
+void MainWindow::on_Map_bCircleRB_clicked()
+{
+    shape_num = 1;
+}
+void MainWindow::on_Map_yCircleRB_clicked()
+{
+    shape_num = 2;
+}
+void MainWindow::on_Map_rEllipseRB_clicked()
+{
+    shape_num = 3;
+}
+void MainWindow::on_Map_gCircleRB_clicked()
+{
+    shape_num = 4;
+}
+
+
+
+
+
+//HSV THINGS
+void MainWindow::on_start_HSV_Button_clicked()
+{
+    stop_hsv = false;
+    hsv_setting(hsv_min, hsv_max);
+}
+void MainWindow::on_stop_HSV_Button_clicked()
+{
+    stop_hsv = true;
+}
+void MainWindow::on_hue_min_slider_actionTriggered(int action)
+{
+    hue_min_label = ui->hue_min_slider->value();
+    ui->hue_min_label->setText("Hue Min: " + QString::number(hue_min_label));
+}
+void MainWindow::on_hue_max_slider_actionTriggered(int action)
+{
+    hue_max_label = ui->hue_max_slider->value();
+    ui->hue_max_label->setText("Hue Max: " + QString::number(hue_max_label));
+}
+void MainWindow::on_sat_min_slider_actionTriggered(int action)
+{
+    sat_min_label = ui->sat_min_slider->value();
+    ui->sat_min_label->setText("Saturation Min: " + QString::number(sat_min_label));
+}
+void MainWindow::on_sat_max_slider_actionTriggered(int action)
+{
+    sat_max_label = ui->sat_max_slider->value();
+    ui->sat_max_label->setText("Saturation Max: " + QString::number(sat_max_label));
+}
+void MainWindow::on_val_min_slider_actionTriggered(int action)
+{
+    val_min_label = ui->val_min_slider->value();
+    ui->val_min_label->setText("Value Min: " + QString::number(val_min_label));
+}
+void MainWindow::on_val_max_slider_actionTriggered(int action)
+{
+    val_max_label = ui->val_max_slider->value();
+    ui->val_max_label->setText("Value Max: " + QString::number(val_max_label));
+}
+
+
+
+//ENABLERS
 void MainWindow::on_YawReg_Enabler2_clicked()
 {
     ui->YawReg_Enabler->setChecked(ui->YawReg_Enabler2->isChecked());
@@ -630,4 +985,15 @@ void MainWindow::on_RollReg_Enabler_clicked()
 void MainWindow::on_DepthReg_Enabler_clicked()
 {
     ui->DepthReg_Enabler2->setChecked(ui->DepthReg_Enabler->isChecked());
+}
+
+
+//SOME
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    dest = true;
+}
+MainWindow::~MainWindow()
+{
+    delete ui;
 }

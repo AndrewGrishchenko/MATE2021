@@ -132,10 +132,12 @@ LIBS += -L"D:\Code\opencv-build\lib" \
 #LIBS += D:\Code\opencv-build\bin\libopencv_videoio440.dll
 
 SOURCES += \
+    customlabel.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    customlabel.h \
     mainwindow.h \
     packets.h
 
