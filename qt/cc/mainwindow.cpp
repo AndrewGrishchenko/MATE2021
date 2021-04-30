@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_udp = new QUdpSocket;
     m_inputpacket = new InputPacket;
     m_outputpacket = new OutputPacket;
-    is_connected = m_udp->bind(QHostAddress("169.254.101.40"), 5115);
+    is_connected = m_udp->bind(QHostAddress("169.254.111.189"), 5115);
 
     timer = new QTimer(this);
     timer->setInterval(60);
@@ -122,7 +122,7 @@ int countCameras()
 }
 
 void MainWindow::send() {
-    m_udp->writeDatagram((char *)(m_outputpacket),sizeof(*m_outputpacket), QHostAddress("169.254.101.39"), 5115);
+    m_udp->writeDatagram((char *)(m_outputpacket),sizeof(*m_outputpacket), QHostAddress("169.254.111.189"), 5115);
 
 
     //    QByteArray data;
@@ -139,7 +139,7 @@ void MainWindow::send() {
 
 bool MainWindow::read()
 {
-    QHostAddress *adress = new QHostAddress("169.254.101.39");
+    QHostAddress *adress = new QHostAddress("169.254.111.189");
 //    QHostAddress *adress = new QHostAddress::Any;
     if(m_udp->hasPendingDatagrams())
     {
@@ -286,7 +286,7 @@ void MainWindow::read_axis()
     m_outputpacket->axis_Y = -constrain(-map(SDL_JoystickGetAxis(joy, 1) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
     m_outputpacket->axis_Z = constrain(map(SDL_JoystickGetAxis(joy, 2) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
     m_outputpacket->axis_W = constrain(map(SDL_JoystickGetAxis(joy, 3) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
-    m_outputpacket->manipulator_rotate = constrain(map(SDL_JoystickGetAxis(joy, 4) + 1, -32768, 32767, -1, 1), -1, 1);
+    m_outputpacket->smatyvalka = constrain(map(SDL_JoystickGetAxis(joy, 4) + 1, -32768, 32767, -1, 1), -1, 1);
 
     if(SDL_JoystickGetButton(joy, 1) == 1) m_outputpacket->manipulator_grab = 1;
     else if(SDL_JoystickGetButton(joy, 0) == 1) m_outputpacket->manipulator_grab = -1;
@@ -319,8 +319,9 @@ void MainWindow::read_axis()
     ui->Y_Value->setNum(-m_outputpacket->axis_Y);
     ui->Z_Value->setNum(m_outputpacket->axis_Z);
     ui->W_Value->setNum(m_outputpacket->axis_W);
-    ui->T_Value->setNum(m_outputpacket->manipulator_rotate);
-    ui->Grabber_rotate->setNum(m_outputpacket->manipulator_rotate);
+//    ui->T_Value->setNum(m_outputpacket->manipulator_rotate);
+//    ui->Grabber_rotate->setNum(m_outputpacket->manipulator_rotate);
+    ui->Smatyvolka_Value->setNum(m_outputpacket->smatyvalka);
     ui->Grabber_grab->setNum(m_outputpacket->manipulator_grab);
     ui->Button_3_Value->setNum(m_outputpacket->buttons[0]);
     ui->Button_4_Value->setNum(m_outputpacket->buttons[1]);
