@@ -86,6 +86,10 @@ private slots:
 
     void on_Map_ClearButton_clicked();
 
+    void on_mussels_StartButton_clicked();
+
+    void on_mussels_StopButton_clicked();
+
 public slots:
     void func();
     void ready_to_read();
@@ -128,6 +132,7 @@ private:
     std::vector<int> hsv_min = {0, 0, 0};
     std::vector<int> hsv_max = {255, 255, 255};
 
+    //HSV
     int hue_min_label=0, hue_max_label=255, sat_min_label=0, sat_max_label=255, val_min_label=0, val_max_label=255;
     bool stop_hsv = true;
     bool dest = false;
@@ -144,5 +149,9 @@ private:
     cv::Mat old_map_img;
     cv::Mat createGrid();
     int shape_num = 1;
+
+    //MUSSELS
+    cv::Mat findCircles();
+    bool stop_mussels = true;
 };
 #endif // MAINWINDOW_H

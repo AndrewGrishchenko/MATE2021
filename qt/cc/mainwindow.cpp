@@ -888,6 +888,53 @@ void MainWindow::on_Map_ClearButton_clicked()
 
 
 
+//MUSSELS
+cv::Mat MainWindow::findCircles()
+{
+    while (!stop_mussels && !dest)
+    {
+//        cap.read(img);
+        cv::Mat img = cv::imread("D://some.png");
+//        cv::Mat newimg = findCircles();
+//        cv::imshow("img", img);
+
+    //    img = imread("circles.png", cv::IMREAD_COLOR);
+
+        cv::Mat newimg;
+        img.copyTo(newimg);
+        cv::Mat gray;
+        cv::cvtColor(newimg, gray, cv::COLOR_BGR2GRAY);
+        cv::Mat img_blur;
+        cv::medianBlur(gray, img_blur, 5);
+        std::vector<cv::Vec3f>  circles;
+        cv::HoughCircles(img_blur, circles, cv::HOUGH_GRADIENT, 1, newimg.rows/64, 200, 10, 5, 30);
+//        cv::HoughCircles(img_blur, circles, cv::HOUGH_GRADIENT, 2.8, 50, 10, 30, 5, 40);
+//        qDebug() << newimg.rows << newimg.rows/64;
+        for(size_t i=0; i<circles.size(); i++)
+        {
+            cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+            int radius = cvRound(circles[i][2]);
+            cv::circle(newimg, center, radius, cv::Scalar(0, 0, 0), 2, 8, 0);
+        }
+//        return newimg;
+
+        cv::imshow("img", img);
+        cv::imshow("newimg", newimg);
+        cv::waitKey(50);
+    }
+    cv::destroyAllWindows();
+}
+void MainWindow::on_mussels_StartButton_clicked()
+{
+    stop_mussels = false;
+    findCircles();
+}
+void MainWindow::on_mussels_StopButton_clicked()
+{
+    stop_mussels = true;
+}
+
+
 
 //MAP THINGS
 void MainWindow::on_Map_bCircleRB_clicked()

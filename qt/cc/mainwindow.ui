@@ -59,7 +59,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QTabWidget" name="tabWidget">
+        <widget class="QTabWidget" name="tabWIdget">
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -67,7 +67,7 @@
           <enum>QTabWidget::Rounded</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>6</number>
          </property>
          <widget class="QWidget" name="tab1">
           <attribute name="title">
@@ -1286,6 +1286,37 @@
             </layout>
            </item>
           </layout>
+         </widget>
+         <widget class="QWidget" name="tab7">
+          <attribute name="title">
+           <string>Mussels</string>
+          </attribute>
+          <widget class="QPushButton" name="mussels_StartButton">
+           <property name="geometry">
+            <rect>
+             <x>140</x>
+             <y>100</y>
+             <width>93</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Start</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="mussels_StopButton">
+           <property name="geometry">
+            <rect>
+             <x>300</x>
+             <y>130</y>
+             <width>93</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Stop</string>
+           </property>
+          </widget>
          </widget>
         </widget>
        </item>
