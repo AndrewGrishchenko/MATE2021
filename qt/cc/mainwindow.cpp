@@ -122,6 +122,7 @@ int countCameras()
 }
 
 void MainWindow::send() {
+    qDebug() << sizeof (m_outputpacket);
     m_udp->writeDatagram((char *)(m_outputpacket),sizeof(*m_outputpacket), QHostAddress("169.254.111.189"), 5115);
 
 
@@ -167,7 +168,7 @@ void  MainWindow::fillOutputPacket()
     //fill m_outputpacket with data
 
 
-    m_outputpacket->is_settings = true;
+    //m_outputpacket->is_settings = true;
 
     m_outputpacket->m_YawKp = float(ui->YawKp_Value->value());
     m_outputpacket->m_YawKp = float(ui->YawKp_Value->value());
@@ -282,12 +283,12 @@ void MainWindow::read_axis()
     SDL_Joystick* joy = SDL_JoystickOpen(SDL_NumJoysticks() - 1);
     SDL_JoystickUpdate();
 
-    m_outputpacket->axis_X = constrain(map(SDL_JoystickGetAxis(joy, 0) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
-    m_outputpacket->axis_Y = -constrain(-map(SDL_JoystickGetAxis(joy, 1) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
-    m_outputpacket->axis_Z = constrain(map(SDL_JoystickGetAxis(joy, 2) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
-    m_outputpacket->axis_W = constrain(map(SDL_JoystickGetAxis(joy, 3) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
-    m_outputpacket->smatyvalka = constrain(map(SDL_JoystickGetAxis(joy, 4) + 1, -32768, 32767, -1, 1), -1, 1);
-
+    m_outputpacket->axisX_p = constrain(map(SDL_JoystickGetAxis(joy, 0) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
+    m_outputpacket->axisY_p = -constrain(-map(SDL_JoystickGetAxis(joy, 1) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
+    m_outputpacket->axisZ_p = constrain(map(SDL_JoystickGetAxis(joy, 2) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
+    m_outputpacket->axisW_p = constrain(map(SDL_JoystickGetAxis(joy, 3) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
+    m_outputpacket->m_smatyvalka_value = constrain(map(SDL_JoystickGetAxis(joy, 4) + 1, -32768, 32767, -1, 1), -1, 1);
+    //qDebug() << m_outputpacket->m_yaw_reg_enable << '\n';
     if(SDL_JoystickGetButton(joy, 1) == 1) m_outputpacket->manipulator_grab = 1;
     else if(SDL_JoystickGetButton(joy, 0) == 1) m_outputpacket->manipulator_grab = -1;
     else m_outputpacket->manipulator_grab = 0;
@@ -301,8 +302,8 @@ void MainWindow::read_axis()
     }
     if(m_outputpacket->buttons[4] == 1)
     {
-        ui->MaxSpeed_Value->setValue(25);
-        ui->MaxSpeed_Value2->setValue(25);
+        ui->MaxSpeed_Value->setValue(20);
+        ui->MaxSpeed_Value2->setValue(30);
     }
     if(m_outputpacket->buttons[3] == 1)
     {
@@ -311,17 +312,17 @@ void MainWindow::read_axis()
     }
     if(m_outputpacket->buttons[2] == 1)
     {
-        ui->MaxSpeed_Value->setValue(75);
-        ui->MaxSpeed_Value2->setValue(75);
+        ui->MaxSpeed_Value->setValue(90);
+        ui->MaxSpeed_Value2->setValue(90);
     }
 
-    ui->X_Value->setNum(m_outputpacket->axis_X);
-    ui->Y_Value->setNum(-m_outputpacket->axis_Y);
-    ui->Z_Value->setNum(m_outputpacket->axis_Z);
-    ui->W_Value->setNum(m_outputpacket->axis_W);
+    ui->X_Value->setNum(m_outputpacket->axisX_p);
+    ui->Y_Value->setNum(-m_outputpacket->axisY_p);
+    ui->Z_Value->setNum(m_outputpacket->axisZ_p);
+    ui->W_Value->setNum(m_outputpacket->axisY_p);
 //    ui->T_Value->setNum(m_outputpacket->manipulator_rotate);
 //    ui->Grabber_rotate->setNum(m_outputpacket->manipulator_rotate);
-    ui->Smatyvolka_Value->setNum(m_outputpacket->smatyvalka);
+    ui->Smatyvolka_Value->setNum(m_outputpacket->m_smatyvalka_value);
     ui->Grabber_grab->setNum(m_outputpacket->manipulator_grab);
     ui->Button_3_Value->setNum(m_outputpacket->buttons[0]);
     ui->Button_4_Value->setNum(m_outputpacket->buttons[1]);
@@ -333,7 +334,7 @@ void MainWindow::read_axis()
     ui->Button_10_Value->setNum(m_outputpacket->buttons[7]);
     ui->Camera_Value->setNum(m_outputpacket->camera_rotate);
     ui->Mic_Spd_Value->setNum(micro_speed);
-    ui->Smatyvolka_Value->setNum(m_outputpacket->smatyvalka);
+    ui->Smatyvolka_Value->setNum(m_outputpacket->m_smatyvalka_value);
 
     if(is_autosend)
     {
