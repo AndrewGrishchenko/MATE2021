@@ -113,6 +113,14 @@ public slots:
     void closeEvent(QCloseEvent *event);
 
 private:
+    int8_t m_axis_x_old = 0;
+    int8_t m_axis_y_old = 0;
+    int8_t m_axis_z_old = 0;
+    int8_t m_axis_w_old = 0;
+    int8_t m_axis_x = 0;
+    int8_t m_axis_y = 0;
+    int8_t m_axis_z = 0;
+    int8_t m_axis_w = 0;
     cv::VideoCapture cap;
     int camera_index = -1;
     QTimer* img_timer;

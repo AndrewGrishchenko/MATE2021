@@ -174,7 +174,11 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QSpinBox" name="MaxSpeed_Value2"/>
+                      <widget class="QSpinBox" name="MaxSpeed_Value2">
+                       <property name="value">
+                        <number>40</number>
+                       </property>
+                      </widget>
                      </item>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_31">
@@ -815,7 +819,11 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QSpinBox" name="MaxSpeed_Value"/>
+               <widget class="QSpinBox" name="MaxSpeed_Value">
+                <property name="value">
+                 <number>40</number>
+                </property>
+               </widget>
               </item>
               <item row="9" column="4">
                <widget class="QLabel" name="label_29">
