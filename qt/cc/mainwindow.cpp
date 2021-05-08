@@ -63,15 +63,15 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start();
 
     joy_timer = new QTimer(this);
-    joy_timer->setInterval(50);
+    joy_timer->setInterval(45);
     joy_timer->start();
 
     m_timer = new QTimer(this);
-    m_timer->setInterval(50);
+    m_timer->setInterval(40);
     m_timer->start();
 
     m_speed_timer = new QTimer(this);
-    m_speed_timer->setInterval(10);
+    m_speed_timer->setInterval(1);
     m_speed_timer->start();
 
     connect(timer, &QTimer::timeout, this, &MainWindow::func);
@@ -324,7 +324,7 @@ void MainWindow::read_axis()
     SDL_JoystickUpdate();
 
     m_axis_x = map(SDL_JoystickGetAxis(joy, 0) + 1, -32768, 32767, -ui->MaxSpeed_Value->value(), ui->MaxSpeed_Value->value());
-    m_axis_y = -map(SDL_JoystickGetAxis(joy, 1) + 1, -32768, 32767, -ui->MaxSpeed_Value->value(), ui->MaxSpeed_Value->value());
+    m_axis_y = map(SDL_JoystickGetAxis(joy, 1) + 1, -32768, 32767, -ui->MaxSpeed_Value->value(), ui->MaxSpeed_Value->value());
     m_axis_z = map(SDL_JoystickGetAxis(joy, 2) + 1, -32768, 32767, -ui->MaxSpeed_Value->value(), ui->MaxSpeed_Value->value());
     m_axis_w = map(SDL_JoystickGetAxis(joy, 3) + 1, -32768, 32767, -ui->MaxSpeed_Value->value(), ui->MaxSpeed_Value->value());
     //qDebug() << m_axis_x << '\n';
@@ -332,10 +332,11 @@ void MainWindow::read_axis()
 //    m_outputpacket->axisY_p = -constrain(-map(SDL_JoystickGetAxis(joy, 1) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
 //    m_outputpacket->axisZ_p = constrain(map(SDL_JoystickGetAxis(joy, 2) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
 //    m_outputpacket->axisW_p = constrain(map(SDL_JoystickGetAxis(joy, 3) + 1, -32768, 32767, -100 * 0.01 * m_real_speed, 100 * 0.01 * m_real_speed), -m_real_speed, m_real_speed);
-    //m_outputpacket->m_smatyvalka_value = constrain(map(SDL_JoystickGetAxis(joy, 4) + 1, -32768, 32767, -1, 1), -1, 1);
+    m_outputpacket->m_smatyvalka_value = constrain(map(SDL_JoystickGetAxis(joy, 4) + 1, -32768, 32767, -1, 1), -1, 1);
     //qDebug() << ui->MaxSpeed_Value->text() << m_real_speed;
     //qDebug() << ui->MaxSpeed_Value->text() << m_real_speed << m_axis_w << m_outputpacket->axisW_p << m_axis_w_old;
-        qDebug() << (int)m_outputpacket->axisX_p << (int)m_outputpacket->axisY_p << (int)m_outputpacket->axisZ_p << (int)m_outputpacket->axisW_p << '\n';
+        //qDebug() << (int)m_outputpacket->axisX_p << (int)m_outputpacket->axisY_p << (int)m_outputpacket->axisZ_p << (int)m_outputpacket->axisW_p << '\n';
+    //qDebug() << m_outputpacket->m_micro_speed;
     if(SDL_JoystickGetButton(joy, 1) == 1) m_outputpacket->manipulator_grab = 1;
     else if(SDL_JoystickGetButton(joy, 0) == 1) m_outputpacket->manipulator_grab = -1;
     else m_outputpacket->manipulator_grab = 0;
@@ -347,6 +348,7 @@ void MainWindow::read_axis()
     {
         m_outputpacket->buttons[i] = SDL_JoystickGetButton(joy, i + 2);
     }
+
     if(m_outputpacket->buttons[4] == 1)
     {
         ui->MaxSpeed_Value->setValue(45);
@@ -361,6 +363,11 @@ void MainWindow::read_axis()
     {
         ui->MaxSpeed_Value->setValue(85);
         ui->MaxSpeed_Value2->setValue(85);
+    }
+    if(m_outputpacket->buttons[5] == 1)
+    {
+        ui->MaxSpeed_Value->setValue(100);
+        ui->MaxSpeed_Value2->setValue(100);
     }
 
     ui->X_Value->setNum(m_outputpacket->axisX_p);
@@ -431,6 +438,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 //           m_outputpacket->smatyvalka = 0;
 //           break;
     }
+
+    ui->Mic_Spd_Value->setText(QString::number(micro_speed));
+    ui->MicSpeed_label->setText(QString::number(micro_speed));
 
 
     //??

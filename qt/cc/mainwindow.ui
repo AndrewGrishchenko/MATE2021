@@ -150,6 +150,27 @@
                   <item>
                    <widget class="QWidget" name="gridWidget" native="true">
                     <layout class="QGridLayout" name="gridLayout_6">
+                     <item row="0" column="1">
+                      <widget class="QSpinBox" name="MaxSpeed_Value2">
+                       <property name="value">
+                        <number>40</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QCheckBox" name="YawReg_Enabler2">
+                       <property name="text">
+                        <string>YawReg</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QCheckBox" name="RollReg_Enabler2">
+                       <property name="text">
+                        <string>RollReg</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="1" column="1">
                       <widget class="QLabel" name="RealSpd_Value2">
                        <property name="sizePolicy">
@@ -166,31 +187,10 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="2" column="1">
-                      <widget class="QCheckBox" name="PitchReg_Enabler2">
-                       <property name="text">
-                        <string>PitchReg</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QSpinBox" name="MaxSpeed_Value2">
-                       <property name="value">
-                        <number>40</number>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_31">
                        <property name="text">
                         <string>MaxSpeed</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QCheckBox" name="YawReg_Enabler2">
-                       <property name="text">
-                        <string>YawReg</string>
                        </property>
                       </widget>
                      </item>
@@ -201,17 +201,40 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="0">
-                      <widget class="QCheckBox" name="RollReg_Enabler2">
+                     <item row="4" column="1">
+                      <widget class="QCheckBox" name="DepthReg_Enabler2">
                        <property name="text">
-                        <string>RollReg</string>
+                        <string>DepthReg</string>
                        </property>
                       </widget>
                      </item>
                      <item row="3" column="1">
-                      <widget class="QCheckBox" name="DepthReg_Enabler2">
+                      <widget class="QCheckBox" name="PitchReg_Enabler2">
                        <property name="text">
-                        <string>DepthReg</string>
+                        <string>PitchReg</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_34">
+                       <property name="text">
+                        <string>MicSpeed</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLabel" name="MicSpeed_label">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="text">
+                        <string>0</string>
                        </property>
                       </widget>
                      </item>
